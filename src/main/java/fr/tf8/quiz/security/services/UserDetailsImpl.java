@@ -9,6 +9,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import fr.tf8.quiz.model.RoleConstants;
 import fr.tf8.quiz.model.Utilisateur;
 import lombok.Data; // Si vous utilisez Lombok, sinon gardez vos getters manuels
 
@@ -32,10 +34,22 @@ public class UserDetailsImpl implements UserDetails {
         this.authorities = authorities;
     }
 
-    // RECTIFICATION : La méthode static doit retourner le nouveau nom
-    public static UserDetailsImpl build(Utilisateur user) {
+public static UserDetailsImpl build(Utilisateur user) {
+        
+        // On traduit le chiffre en texte pour Spring Security
+        String roleName;
+        
+        // On vérifie la valeur du int role
+        if (user.getRole() == RoleConstants.ADMIN) {
+             roleName = "ROLE_ADMIN";
+        } else if (user.getRole() == RoleConstants.ANIMATEUR) {
+             roleName = "ROLE_ANIMATEUR";
+        } else {
+             roleName = "ROLE_JOUEUR"; // Par défaut (1)
+        }
+
         List<GrantedAuthority> authorities = Collections.singletonList(
-                new SimpleGrantedAuthority(user.getRole()));
+                new SimpleGrantedAuthority(roleName));
 
         return new UserDetailsImpl(
                 user.getId(),
@@ -56,7 +70,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email; // IMPORTANT : L'email sert de login [cite: 52]
+        return email; // IMPORTANT : L'email sert de login 
     }
 
     @Override

@@ -10,7 +10,7 @@ import fr.tf8.quiz.model.Utilisateur;
 public interface UtilisateurRepository extends JpaRepository<Utilisateur, Long> {
 
     /**
-     * Cette méthode est magique.
+     *
      * Spring comprend "findByEmail" et écrit tout seul le SQL :
      * "SELECT * FROM utilisateurs WHERE email = ?"
      */
