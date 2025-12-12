@@ -25,14 +25,12 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        // C'est ici qu'on explique à Spring comment trouver un utilisateur dans la BDD
         return username -> repository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
     }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        // C'est le composant qui vérifie les mots de passe
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());
@@ -46,7 +44,6 @@ public class ApplicationConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        //[cite_start]// Cryptage des mots de passe requis par les specs [cite: 142]
         return new BCryptPasswordEncoder();
     }
 }

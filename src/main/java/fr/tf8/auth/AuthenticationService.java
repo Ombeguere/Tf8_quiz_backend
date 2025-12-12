@@ -29,7 +29,7 @@ public class AuthenticationService {
             throw new IllegalStateException("L'email est déjà utilisé."); 
         }
     	
-    	var user = new Utilisateur();
+    	Utilisateur user = new Utilisateur();
         user.setFirstname(request.getFirstname());
         user.setLastname(request.getLastname());
         user.setEmail(request.getEmail());
@@ -45,7 +45,7 @@ public class AuthenticationService {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
-        var user = repository.findByEmail(request.getEmail()).orElseThrow();
+        Utilisateur user = repository.findByEmail(request.getEmail()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return new AuthenticationResponse(jwtToken);
     }

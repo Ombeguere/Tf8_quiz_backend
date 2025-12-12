@@ -10,7 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
-@Table(name = "utilisateur")
+@Table(name = "user")
 public class Utilisateur implements UserDetails {
 
 	@Id
@@ -35,14 +35,12 @@ public class Utilisateur implements UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		String roleName;
-		switch (this.role) {
-		case 1:
+		
+		if (this.role == null) {
+			roleName = "ROLE_JOUEUR";
+		} else if(this.role == 0) {
 			roleName = "ROLE_ADMIN";
-			break;
-		case 2:
-			roleName = "ROLE_ANIMATEUR";
-			break;
-		default:
+		}else {
 			roleName = "ROLE_JOUEUR";
 		}
 		return List.of(new SimpleGrantedAuthority(roleName));

@@ -21,18 +21,20 @@ public class SecurityConfiguration {
 		this.authenticationProvider = authenticationProvider;
 	}
 
-	@Bean
+	@Bean	
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll()
-
-				.requestMatchers("/api/admin/**").hasRole("ADMIN")
-
-				.requestMatchers("/api/animateur/**").hasAnyRole("ADMIN", "ANIMATEUR")
-
-				.anyRequest().authenticated())
-				.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authenticationProvider(authenticationProvider)
-				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+		http.csrf(csrf -> csrf.disable())
+			.authorizeHttpRequests(auth -> auth
+				.requestMatchers("/auth/**").permitAll()
+				.requestMatchers("/quiz").permitAll()
+				.requestMatchers("/quiz/*", "/quiz/*/questions", "/quiz/*/questions/**", "/quiz/*/control/**").hasAnyRole("ADMIN")
+				.requestMatchers("/quiz/*/play/**", "/quiz/*/admin/**").hasAnyRole("ADMIN")
+				.requestMatchers("/questions/**").hasAnyRole("ADMIN")
+				.anyRequest().authenticated()
+			)
+			.sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+			.authenticationProvider(authenticationProvider)
+			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
 	}
